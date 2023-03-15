@@ -1,0 +1,160 @@
+delete store.db when changing
+-----------------
+@app.route("/api/product/<string:name>", methods=["GET"])
+string is class e.g. <Product>, <name> is item e.g. "apple"
+-----------------
+product_json = product.to_dict()
+    Does not consider
+        db.session.get(Product, "potatosc") 
+            When error checking -> invalid item names
+            >>> db.session.get(Product, "potatosc") 
+            >>> a = db.session.get(Product, "potatosc") 
+            >>> a
+            >>> print(a)
+            None
+            >>> a = db.session.get(Product, "potato")   
+            >>> print(a)
+            <Product potato>
+
+----------------------
+Terminal Commands
+flask --app [nameOfFile] run
+    flask app displays 
+        http://127.0.0.1:5000
+
+python -i debug.py
+    db.session.get(Product,"apples")
+        <Product apple>
+    db.session.get(Product,"apples").quantity
+        100
+    db.session.get(Product,"apples").price
+        1.49
+---------------------    
+create_table.py
+python app.py
+create_products.py
+create_order.py
+---------------------
+POST
+POSTMAN
+http://localhost:5000/api/product
+    POST -> body -> json -> raw
+        {"name": "socks", "price": 2.99, "quantity": 1111}
+http POST http://127.0.0.1:5000/api/product name="socks" price=4.20 quantity=1111
+    posts data onto web api
+
+DELETE -> POSTMAN
+http://localhost:5000/api/product/socks
+    deletes data
+
+PUT
+    POSTMAN
+    a PUT request is used to update existing item identified by a unique identifier such as URL or an ID
+    PUT http://localhost:5000/api/product/socks
+    {"name": "socks", "price": 2.99, "quantity": 1234}
+
+---------
+python create_order.py
+>>>New order, with ID 1
+GET POSTMAN
+http://localhost:5000/api/order/1
+
+GET order_id
+http GET http://127.0.0.1:5000/api/order/1
+
+----------
+DEMO>>>>>>>>>>>>>>>>>>>>
+python create_table.py
+python app.py
+python create_products.py
+python create_order.py
+
+1)create new product with POST
+ http POST http://127.0.0.1:5000/api/product name="socks" price=4.20 quantity=1111
+
+2)update existing product with PUT
+ http PUT http://127.0.0.1:5000/api/product/apple name="apple" price=5 quantity=5
+
+3)get updated product
+ http GET http://127.0.0.1:5000/api/product/apple
+
+4)delete product
+ http DELETE http://127.0.0.1:5000/api/product/bananas
+
+5)verify product is not in database with GET
+ http GET http://127.0.0.1:5000/api/product/bananas
+
+6)load the homepage of the app in your browser and confirm that the store inventory has been updated
+
+7)create a new order with python .\create_order.py
+ New order, with ID 1
+
+8)view created order
+ http GET http://127.0.0.1:5000/api/order/1  
+
+9)create a new order with json endpoint /api/order
+POSTMAN
+    POST
+    {
+        "customer_name": "Tim",
+        "customer_address": "555 Seymour Street, Vancouver",
+        "products": [
+        {
+        "name": "apple",
+        "quantity": 10
+        },
+        {
+        "name": "cheese",
+        "quantity": 1
+        }
+        ],
+        "price": 23.89
+    }
+
+    Product not found
+        {
+        "customer_name": "Tim",
+        "customer_address": "555 Seymour Street, Vancouver",
+        "products": [
+        {
+        "name": "Dragon",
+        "quantity": 10
+        },
+        {
+        "name": "cheese",
+        "quantity": 1
+        }
+        ],
+        "price": 23.89
+    }
+
+    Exceeded quantity
+        {
+        "customer_name": "Tim",
+        "customer_address": "555 Seymour Street, Vancouver",
+        "products": [
+        {
+        "name": "apple",
+        "quantity": 100000
+        },
+        {
+        "name": "cheese",
+        "quantity": 1
+        }
+        ],
+        "price": 23.89
+    }
+
+
+
+
+
+
+
+
+----------
+python .\client.py
+purely terminal base with a GUI with buttons
+
+or grocery_tk_template
+displays in a GUI with buttons
