@@ -70,7 +70,7 @@ python create_products.py
 python create_order.py
 
 1)create new product with POST
- http POST http://127.0.0.1:5000/api/product name="socks" price=4.20 quantity=1111
+ http POST http://127.0.0.1:5000/api/product name="rocks" price=3.29 quantity=1111
 
 2)update existing product with PUT
  http PUT http://127.0.0.1:5000/api/product/apple name="apple" price=5 quantity=5
@@ -144,12 +144,6 @@ POSTMAN
         ],
         "price": 23.89
     }
-
-
-
-
-
-
 
 
 ----------
