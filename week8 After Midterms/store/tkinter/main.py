@@ -22,7 +22,7 @@ textbox.pack(padx=10)
 # button = tk.Button(root, text="Click Me", font=("Arial", 18))
 # button.pack()
 
-#Grid Layout for buttons
+#Grid Layout for buttons~~~~~
 buttonframe = tk.Frame(root)
 buttonframe.columnconfigure(0, weight=1)
 buttonframe.columnconfigure(1, weight=1)

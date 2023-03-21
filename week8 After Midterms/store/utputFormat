@@ -1,0 +1,41 @@
+    #make it so it displays orders?
+    # def show_message(self):
+    #     if self.check_state.get() == 0:
+    #         #index "1.0" is the start of the string
+    #         print(self.textbox.get("1.0", tk.END))
+    #     else:
+    #         messagebox.showinfo(title="Message", message=self.textbox.get("1.0", tk.END))
+    
+    # #create or connect to a database
+# conn = db.connect("store.db")
+# #create a cursor
+# cursor = db.conn.cursor()
+# #create tables
+# cursor.execute('''
+#           CREATE TABLE Product
+#           (name VARCHAR(20) PRIMARY KEY ASC,
+#            price REAL NOT NULL,
+#            quantity INTEGER NOT NULL
+#           )
+#           ''')
+# #commit changes
+# conn.commit()
+# #close connection
+# conn.close()
+
+        # if response.status_code == 200:
+        #     products = response.json()
+        #     # products = Product.query.all()
+        #     # With tk.Toplevel create a new window to display the products 
+        #     storage_window = tk.Toplevel(self.root)
+        #     storage_window.title("All Products")
+        #     # Create a label and a listbox to display the products
+        #     label = tk.Label(storage_window, text="All Products", font=("Arial", 18))
+        #     label.pack(padx=10, pady=10)
+        #     listbox = tk.Listbox(storage_window, font=("Arial", 16))
+        #     listbox.pack(padx=10, pady=10)
+        #     for product in products:
+        #         # add each product to the listbox
+        #         listbox.insert(tk.END, f"{products['name']} - ${product['price']} - Quantity: {product['quantity']}")
+        # else:
+        #     messagebox.showerror("Error", f"Error retrieving products from the database: {response.text}")
