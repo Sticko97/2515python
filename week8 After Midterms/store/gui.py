@@ -27,39 +27,66 @@ class MyGUI:
         self.menubar.add_cascade(menu=self.filemenu, label="Filez")
         
         #Adding text to the GUI
-        self.label = tk.Label(self.root, text="Stanley Le A00961484", font=("Arial", 18))
+        self.label = tk.Label(self.root, text="Stanley Le A00961484", font=("Arial", 12))
         self.label.pack(padx=10, pady=10)
         
-        #Textbox 
+        #Textbox for Creating Products
+        self.labelCP = tk.Label(self.root, text="Create Products", font=("Arial", 12))
+        self.labelCP.pack(padx=10, pady=10)
+        #Product Name
+        self.label = tk.Label(self.root, text="Enter Product Name", font=("Arial", 12))
+        self.label.pack(padx=10, pady=10)
         self.textbox_name = tk.Text(self.root, height=1, font=("Arial", 16))
         self.textbox_name.pack(padx=10, pady=5)
+        #Product Price
+        self.label = tk.Label(self.root, text="Enter Product Price", font=("Arial", 12))
+        self.label.pack(padx=10, pady=10)
         self.textbox_price = tk.Text(self.root, height=1, font=("Arial", 16))
         self.textbox_price.pack(padx=10, pady=5)
+        #Product Quantity
+        self.label = tk.Label(self.root, text="Enter Product Quantity", font=("Arial", 12))
+        self.label.pack(padx=10, pady=10)
         self.textbox_quantity = tk.Text(self.root, height=1, font=("Arial", 16))
         self.textbox_quantity.pack(padx=10, pady=5)
         
+        
+        #Textbox for Deleting Products
+        self.labelDP = tk.Label(self.root, text="Delete Product", font=("Arial", 12))
+        self.labelDP.pack(padx=10, pady=10)
+        self.deleteBox_name = tk.Text(self.root,height=1, font=("Arial", 16))
+        self.deleteBox_name.pack()
+        # self.deleteBox_name.insert("1.0", "Enter Product Name")
+        # self.deleteBox_name.tag_configure("placeholder", foreground="black")
+        # self.deleteBox_name.tag_remove("placeholder" "1.0", "end")
+        
+        
         #state of the textbox, need "variable=self.check_state"
         #Can turn this into a view type of element~~~
-        self.check_state = tk.IntVar()
-        self.check = tk.Checkbutton(self.root, text="show messagebox", font=("Arial", 18), variable=self.check_state)
-        self.check.pack(padx=10,pady=10)
+        #Check Button
+        # self.check_state = tk.IntVar()
+        # self.check = tk.Checkbutton(self.root, text="show messagebox", font=("Arial", 12), variable=self.check_state)
+        # self.check.pack(padx=10,pady=10)
         
         #Button Events
         #Show Storage
-        self.showButton = tk.Button(self.root, text="Show Storage", font=("Arial", 18), command=self.show_storage)
+        self.showButton = tk.Button(self.root, text="Show Storage", font=("Arial", 12), command=self.show_storage)
         self.showButton.pack(padx=10, pady=10)
         
         #Create Product
-        self.createButton = tk.Button(self.root, text="Create Product", font=("Arial", 18), command=self.api_create_product)
+        self.createButton = tk.Button(self.root, text="Create Product", font=("Arial", 12), command=self.api_create_product)
         self.createButton.pack(padx=10, pady=10)
         
         #Clear button
-        self.clearbtn = tk.Button(self.root,text="clear", command=self.clear)
-        self.clearbtn.pack(padx=10, pady=10)
+        self.clearButton = tk.Button(self.root,text="clear", command=self.clear)
+        self.clearButton.pack(padx=10, pady=10)
                 
+        
+        #Delete Button
+        self.deleteButton = tk.Button(self.root,text="Delete Product", command=self.delete_product)
+        self.deleteButton.pack(padx=10, pady=10)
+    
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
-    
     
     #Clear button to delete text in text boxes
     def clear(self):
@@ -111,5 +138,29 @@ class MyGUI:
             messagebox.showinfo("Success", "Item added to the database")
         else:
             messagebox.showerror("Error", f"Error adding item to the database: {response.text}")
+    
+    def api_update_product(self):
+        pass
+    
+    # def delete_product(self):
+    #     url = "http://127.0.0.1:5000/api/product/<string:name>"
+    #     data = {
+    #     "name": self.deleteBox_name.get("1.0", tk.END).strip()
+    #     }
+    #     response = requests.delete(url,json=data)
+    #     print(response)
+    #     if response.status_code == 200:
+    #         messagebox.showinfo("Success", "Item deleted from database")
+    #     else:
+    #         messagebox.showerror("Error", f"Error deleting product from database: {response.text}")
+    def delete_product(self):
+        name = self.deleteBox_name.get("1.0", tk.END).strip()
+        url = f"http://127.0.0.1:5000/api/product/{name}"
+        response = requests.delete(url)
+        if response.status_code == 200:
+            messagebox.showinfo("Success", f"{name} deleted from database")
+        else:
+            messagebox.showerror("Error", f"Error deleting {name} from database: {response.text}")
+        
 MyGUI()
 

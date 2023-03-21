@@ -59,11 +59,6 @@ def api_get_product(name):
     else:
         return jsonify({'error': 'Product not found'}), 404
     
-@app.route("/api/product", methods=["GET"])
-def api_show_storage():
-    products = Product.query.all()
-    product_list = [product.to_dict() for product in products]
-    return jsonify(product_list)
 
 @app.route("/api/product/<string:name>", methods=["DELETE"])
 def api_delete_product(name):
@@ -160,13 +155,13 @@ def api_process_order(order_id):
     return jsonify(order.to_dict())
 
 #GUI code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# def get_all_products():
-#     try:
-#         products = Product.query.all()
-#         return [product.to_dict() for product in products]
-#     except Exception as e:
-#         print(f"Error retrieving products from database {str(e)}")
-#         return []
+@app.route("/api/product", methods=["GET"])
+def api_show_storage():
+    products = Product.query.all()
+    product_list = [product.to_dict() for product in products]
+    return jsonify(product_list)
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
