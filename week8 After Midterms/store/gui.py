@@ -22,13 +22,14 @@ class MyGUI:
         self.root = tk.Tk()
         self.root.geometry("1000x1000")
         self.root.title("Shop Database GUI")
+        self.root.columnconfigure(0, weight=1)
 
         # Create Products section
         self.create_products_frame = tk.Frame(self.root)
         self.create_products_frame.grid(row=0, column=0, padx=10, pady=10)
 
         self.labelCP = tk.Label(self.create_products_frame, text="Create Products by entering Product Name,#,# in Boxes", font=("Arial", 12))
-        self.labelCP.grid(row=0, column=0, padx=10, pady=10)
+        self.labelCP.grid(row=0, column=1, padx=10, pady=10)
 
         self.label_name = tk.Label(self.create_products_frame, text="Enter Product Name", font=("Arial", 12))
         self.label_name.grid(row=1, column=0, padx=10, pady=10)
@@ -49,8 +50,8 @@ class MyGUI:
         self.createButton.grid(row=4, column=0, padx=6, pady=6)
 
         # Update Product Button
-        self.updateButton = tk.Button(self.root, text="Update Product", font=("Arial", 12), command=self.update_product)
-        self.updateButton.grid(row=5, column=5, padx=6, pady=6)
+        self.updateButton = tk.Button(self.create_products_frame, text="Update Product", font=("Arial", 12), command=self.update_product)
+        self.updateButton.grid(row=4, column=1, padx=6, pady=6)
 
         # Delete Product section
         self.delete_products_frame = tk.Frame(self.root)
@@ -66,7 +67,7 @@ class MyGUI:
         self.deleteBox_name.grid(row=1, column=0, padx=6, pady=5)
         
         self.deleteButton = tk.Button(self.delete_products_frame, text="Delete Product", command=self.delete_product)
-        self.deleteButton.grid(row=1, column=1, padx=6, pady=6)
+        self.deleteButton.grid(row=2, column=0, padx=6, pady=6)
         
         # Products section
         self.products_frame = tk.Frame(self.root)
@@ -80,8 +81,6 @@ class MyGUI:
         self.clearButton = tk.Button(self.products_frame, text="clear", command=self.clear)
         self.clearButton.grid(row=0, column=1, padx=10, pady=10)
 
-        self.createOrder = tk.Button(self.products_frame, text="Create Order", command=self.create_order)
-        self.createOrder.grid(row=0, column=2, padx=10, pady=10)
 
         self.customer_name_label = tk.Label(self.products_frame, text="Customer Name", font=("Arial", 12))
         self.customer_name_label.grid(row=1, column=0, padx=10, pady=10)
@@ -98,6 +97,8 @@ class MyGUI:
         self.producttestbox = tk.Entry(self.products_frame,font=("Arial", 16))
         self.producttestbox.grid(row=3, column=1, padx=10, pady=10)
         
+        self.createOrder = tk.Button(self.products_frame, text="Create Order", command=self.create_order)
+        self.createOrder.grid(row=4, column=1, padx=10, pady=10)
         # self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
     
