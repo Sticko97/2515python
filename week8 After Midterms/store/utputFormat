@@ -39,3 +39,51 @@
         #         listbox.insert(tk.END, f"{products['name']} - ${product['price']} - Quantity: {product['quantity']}")
         # else:
         #     messagebox.showerror("Error", f"Error retrieving products from the database: {response.text}")
+
+# class MyGUI:
+    
+#     def __init__(self):
+#         #initialize tk
+#         self.root = tk.Tk()
+#         #Set title for GUI
+#         self.root.title("Shop Database GUI")
+#         self.buttonframe = tk.Frame(self.root)
+#         # self.buttonframe.columnconfigure(0, weight=1)
+#         # self.buttonframe.columnconfigure(1, weight=1)
+#         # self.buttonframe.columnconfigure(2, weight=1)
+#         # self.buttonframe.columnconfigure(3, weight=1)
+#         # self.buttonframe.columnconfigure(4, weight=1)
+        
+#         #navbar, things like file menu
+#         self.menubar = tk.Menu(self.root)
+#         self.filemenu = tk.Menu(self.menubar, tearoff=0)
+#         # self.filemenu.add_command(label="New", command=self.on_closing)
+#         # self.filemenu.add_command(label="View", command=self.on_closing)
+#         self.filemenu.add_separator()
+#         self.root.config(menu=self.menubar)
+#         #Navbar file names e.g file, new, insert
+#         self.menubar.add_cascade(menu=self.filemenu, label="Filez")
+
+        #state of the textbox, need "variable=self.check_state"
+        #Can turn this into a view type of element~~~
+        #Check Button
+        # self.check_state = tk.IntVar()
+        # self.check = tk.Checkbutton(self.root, text="show messagebox", font=("Arial", 12), variable=self.check_state)
+        # self.check.pack(padx=10,pady=10)
+
+        #Clear button
+        # self.clearButton = tk.Button(self.root,text="clear", command=self.clear)
+        # self.clearButton.pack(padx=10, pady=10)
+        
+        # self.createOrder = tk.Button(self.root,text="Create Order", command=self.create_order)
+        # self.createOrder.pack(padx=10, pady=10)
+        # self.customer_name = tk.Entry(self.root, font=("Arial", 16))
+        # self.customer_name.pack(padx=10, pady=10)
+        # self.customer_address = tk.Entry(self.root, font=("Arial", 16))
+        # self.customer_address.pack(padx=10, pady=10)
+        # self.producttestbox = tk.Entry(self.root,font=("Arial", 16))
+        # self.producttestbox.pack(padx=10, pady=10)
+        
+#         #Adding text to the GUI
+#         self.label = tk.Label(self.root, text="Stanley Le A00961484", font=("Arial", 12))
+#         self.label.pack(padx=10, pady=10)
