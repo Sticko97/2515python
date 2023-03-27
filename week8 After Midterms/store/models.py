@@ -59,5 +59,11 @@ class ProductsOrder(db.Model):
     quantity = db.Column(db.Integer, nullable=False) 
     # Relationships and backreferences for SQL Alchemy 
     product = db.relationship('Product') 
-    order = db.relationship('Order', back_populates='products') 
+    order = db.relationship('Order', back_populates='products')
+    
+    # def to_dict(self):
+    #     return {
+    #         "product_name": self.product_name,
+    #         "quantity": self.quantity
+    #     }
     

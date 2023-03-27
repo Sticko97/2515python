@@ -161,6 +161,12 @@ def api_show_storage():
     product_list = [product.to_dict() for product in products]
     return jsonify(product_list)
 
+@app.route("/api/order", methods=["GET"])
+def api_show_order():
+    orders = Product.query.all()
+    orders_list = [orders.to_dict() for orders in orders]
+    return jsonify(orders_list)
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

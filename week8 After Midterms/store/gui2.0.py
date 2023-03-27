@@ -174,6 +174,18 @@ class MyGUI:
         else:
             messagebox.showerror("Error", f"Error retrieving products from the database: {response.text}")
     
+    def customer_order_window(self):
+        self.order_window = tk.Toplevel(self.root)
+        self.order_window.title("All Orders")
+
+        scrollbar = tk.Scrollbar(self.order_window)
+        scrollbar.pack()
+
+        self.order_listbox = tk.Listbox(self.order_window, width=100, yscrollcommand=scrollbar.set)
+        self.order_listbox.pack()
+
+        scrollbar.config(command=self.order_listbox.yview)
+    
     #Function to add products to the database
     def create_product(self):
         url = "http://127.0.0.1:5000/api/product"
@@ -219,31 +231,18 @@ class MyGUI:
         if response.status_code == 200:
             orders = response.json()
 
-            # Create new window to display orders
-            self.order_window = tk.Toplevel(self.root)
-            self.order_window.title("All Orders")
+            self.customer_order_window()
 
-            # Create a scrollbar for the listbox
-            scrollbar = tk.Scrollbar(self.order_window)
-            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-            # Create a listbox to display the orders
-            self.order_listbox = tk.Listbox(self.order_window, width=100, yscrollcommand=scrollbar.set)
-            self.order_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
-
-            # Link the scrollbar to the order_listbox
-            scrollbar.config(command=self.order_listbox.yview)
-
-            # Populate the order_listbox with the order details
             for order in orders:
-                order_listbox.insert(tk.END, f"Order ID: {order['id']}  Customer Name: {order['customer_name']}  Customer Address: {order['customer_address']}  Price: {order['price']}")
+                self.order_listbox.insert(tk.END, f"Order ID: {order['id']}  Customer Name: {order['customer_name']}  Customer Address: {order['customer_address']}  Price: {order['price']}")
                 for product in order['products']:
-                    order_listbox.insert(tk.END, f"Product: {product['name']}  Quantity: {product['quantity']}  Price: {product['price']}")
-                order_listbox.insert(tk.END, "")
+                    self.order_listbox.insert(tk.END, f"Product: {product['name']}  Quantity: {product['quantity']}  Price: {product['price']}")
+                self.order_listbox.insert(tk.END, "")
 
         else:
             messagebox.showerror("Error", f"Error retrieving orders from the database: {response.text}")
-            
+
+
     def create_order(self):
         # Get the customer name and address from the GUI text boxes
         customer_name = self.customer_name.get().strip()
@@ -267,11 +266,8 @@ class MyGUI:
         if response.status_code == 200:
             order = response.json()
 
-            #order window
-            order_window = tk.Toplevel(self.root)
-            order_window.title("Order Created")
-            self.o1 = tk.Listbox(order_window, height=50, width=50)
-            self.o1.pack()
+            self.customer_order_window()
+            self.order_listbox.insert(tk.END, f"Order ID: {order['id']}  Customer Name: {order['customer_name']}  Customer Address: {order['customer_address']}")
 
             for product in products:
                 # Retrieve the product details from the API
@@ -281,7 +277,7 @@ class MyGUI:
                     product_data = response.json()
                     total_price = product_data['price'] * product['quantity']
                     # Insert product and total price into listbox
-                    self.o1.insert(tk.END, f"{product_data['name']}  Quantity: {product['quantity']}  Total Price: {total_price}")
+                    self.order_listbox.insert(tk.END, f"{product_data['name']}  Quantity: {product['quantity']}  Total Price: {total_price}")
                 else:
                     messagebox.showerror("Error", f"Error retrieving product details: {response.text}")
 
