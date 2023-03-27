@@ -13,7 +13,7 @@ class Product(db.Model):
             }
 
 class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True) #unique # for order
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) #unique # for order
     name = db.Column(db.String, nullable=False) #Customer name from order e.g. Tim
     address = db.Column(db.String, nullable=False)#Customer address from order e.g. Vancouver
     completed = db.Column(db.Boolean, default=False)#True means order has been processed
@@ -32,6 +32,7 @@ class Order(db.Model):
             total_price += product_dict["price"]
             
         return {
+            "order_id": self.id,
             "customer_address": self.address,
             "customer_name": self.name,
             "products": products_list,

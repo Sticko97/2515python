@@ -135,7 +135,9 @@ def api_create_order():
     db.session.commit()
 
     # Return the JSON representation of the new order
-    return jsonify(new_order.to_dict())
+    order_dict = new_order.to_dict()
+    order_dict['id'] = new_order.id
+    return jsonify({"id": new_order.id, **new_order.to_dict()})
 
 @app.route('/api/order/<int:order_id>', methods=['PUT'])
 def api_process_order(order_id):
@@ -163,8 +165,8 @@ def api_show_storage():
 
 @app.route("/api/order", methods=["GET"])
 def api_show_order():
-    orders = Product.query.all()
-    orders_list = [orders.to_dict() for orders in orders]
+    orders = Order.query.all()
+    orders_list = [order.to_dict() for order in orders]
     return jsonify(orders_list)
 
 

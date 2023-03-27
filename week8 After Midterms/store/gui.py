@@ -10,7 +10,6 @@ import requests
 
 """TODO 
 uncomment on_closing functions when project finished
-turn text into entry and update functions when doing so
 
 
 """
@@ -20,7 +19,7 @@ class MyGUI:
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.geometry("1000x1000")
+        self.root.geometry("800x500")
         self.root.title("Shop Database GUI")
         self.root.columnconfigure(0, weight=1)
 
@@ -80,6 +79,8 @@ class MyGUI:
 
         self.clearButton = tk.Button(self.products_frame, text="clear", command=self.clear)
         self.clearButton.grid(row=0, column=1, padx=10, pady=10)
+        
+        self.orders=[]
         #~~~~~~
 
         
@@ -152,6 +153,7 @@ class MyGUI:
 
             product_quantity_label = tk.Label(cust_order_frame, text="Product Quantity:", font=("Arial", 12))
             product_quantity_label.grid(row=0, column=3, padx=10, pady=10)
+            
 
             # Orders section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             self.product_quantity_boxes = []
@@ -212,20 +214,84 @@ class MyGUI:
             messagebox.showerror("Error", f"Error deleting {name} from database: {response.text}")
             
             
+            
+    def create_order(self):
+        # Get the customer name and address from the GUI text boxes
+        customer_name = self.customer_name.get().strip()
+        customer_address = self.customer_address.get().strip()
+
+        # Get the list of products and quantities from the GUI text boxes
+        self.products_order = []
+        for idx, product_name in enumerate(self.producttestbox.curselection()):
+            product_name = self.producttestbox.get(product_name)
+            product_quantity = int(self.product_quantity_boxes[idx].get().strip())
+            self.products_order.append({"name": product_name, "quantity": product_quantity})
+
+        # Create the data dictionary to send in the POST request
+        data = {"customer_name": customer_name, "customer_address": customer_address, "products": self.products_order}
+
+        # Send the POST request to the API endpoint
+        url = "http://127.0.0.1:5000/api/order"
+        response = requests.post(url, json=data)
+
+        # Handle the response
+        if response.status_code == 200:
+            order = response.json()
+            # order_id = order.get('id')  # get the value of the 'id' key, or None if it doesn't exist
+
+            # Append the order ID to the order object before adding it to the orders list
+            # order['id'] = order_id
+            # self.orders.append(order)
+            
+            order_id = order['id']  # Get the 'id' from the response
+
+            self.orders.append(order)
+
+            # order window
+            #TODO FIX THIS WINDOW
+            self.order_window = tk.Toplevel(self.storage_window)
+            self.order_window.title("Order Created")
+            self.order_listbox = tk.Listbox(self.order_window, height=50, width=50)
+            self.order_listbox.pack()
+
+            for product in self.products_order:
+                # Retrieve the product details from the API
+                url = f"http://127.0.0.1:5000/api/product/{product['name']}"
+                response = requests.get(url)
+                if response.status_code == 200:
+                    product_data = response.json()
+                    total_price = product_data['price'] * product['quantity']
+                    # Insert product and total price into listbox
+                    self.order_listbox.insert(tk.END, f"{product_data['name']}  Quantity: {product['quantity']}  Total Price: {total_price}")
+                else:
+                    messagebox.showerror("Error", f"Error retrieving product details: {response.text}")
+
+            if order_id:
+                messagebox.showinfo("Success", f"Order created with ID: {order_id}")
+            else:
+                messagebox.showwarning("Warning", "Order created but could not retrieve ID")
+        else:
+            messagebox.showerror("Error", f"Error creating order: {response.text}")
+                
     def view_order(self):
         url = "http://127.0.0.1:5000/api/order"
         response = requests.get(url)
 
         if response.status_code == 200:
             orders = response.json()
+            # print("Orders:", orders)
 
             # Create new window to display orders
             self.order_window = tk.Toplevel(self.root)
             self.order_window.title("All Orders")
 
+            self.order_frame = tk.Frame(self.order_window)
+            self.order_frame.pack()
+            
             # Create a scrollbar for the listbox
             scrollbar = tk.Scrollbar(self.order_window)
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            
 
             # Create a listbox to display the orders
             self.order_listbox = tk.Listbox(self.order_window, width=100, yscrollcommand=scrollbar.set)
@@ -236,57 +302,12 @@ class MyGUI:
 
             # Populate the order_listbox with the order details
             for order in orders:
-                order_listbox.insert(tk.END, f"Order ID: {order['id']}  Customer Name: {order['customer_name']}  Customer Address: {order['customer_address']}  Price: {order['price']}")
+                self.order_listbox.insert(tk.END, f"Order ID: {order['order_id']}  Customer Name: {order['customer_name']}  Customer Address: {order['customer_address']}  Price: {order['price']}")
                 for product in order['products']:
-                    order_listbox.insert(tk.END, f"Product: {product['name']}  Quantity: {product['quantity']}  Price: {product['price']}")
-                order_listbox.insert(tk.END, "")
+                    self.order_listbox.insert(tk.END, f"Product: {product['name']}  Quantity: {product['quantity']}  Price: {product['price']}")
+                self.order_listbox.insert(tk.END, "")
 
         else:
             messagebox.showerror("Error", f"Error retrieving orders from the database: {response.text}")
-            
-    def create_order(self):
-        # Get the customer name and address from the GUI text boxes
-        customer_name = self.customer_name.get().strip()
-        customer_address = self.customer_address.get().strip()
-
-        # Get the list of products and quantities from the GUI text boxes
-        products = []
-        for idx, product_name in enumerate(self.producttestbox.curselection()):
-            product_name = self.producttestbox.get(product_name)
-            product_quantity = int(self.product_quantity_boxes[idx].get().strip())
-            products.append({"name": product_name, "quantity": product_quantity})
-
-        # Create the data dictionary to send in the POST request
-        data = {"customer_name": customer_name, "customer_address": customer_address, "products": products}
-
-        # Send the POST request to the API endpoint
-        url = "http://127.0.0.1:5000/api/order"
-        response = requests.post(url, json=data)
-
-        # Handle the response
-        if response.status_code == 200:
-            order = response.json()
-
-            #order window
-            order_window = tk.Toplevel(self.root)
-            order_window.title("Order Created")
-            self.o1 = tk.Listbox(order_window, height=50, width=50)
-            self.o1.pack()
-
-            for product in products:
-                # Retrieve the product details from the API
-                url = f"http://127.0.0.1:5000/api/product/{product['name']}"
-                response = requests.get(url)
-                if response.status_code == 200:
-                    product_data = response.json()
-                    total_price = product_data['price'] * product['quantity']
-                    # Insert product and total price into listbox
-                    self.o1.insert(tk.END, f"{product_data['name']}  Quantity: {product['quantity']}  Total Price: {total_price}")
-                else:
-                    messagebox.showerror("Error", f"Error retrieving product details: {response.text}")
-
-            messagebox.showinfo("Success", f"Order created with ID: {order['id']}")
-        else:
-            messagebox.showerror("Error", f"Error creating order: {response.text}")
 MyGUI()
 
