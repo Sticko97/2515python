@@ -81,10 +81,6 @@ class MyGUI:
         self.clearButton.grid(row=0, column=1, padx=10, pady=10)
         
         self.orders=[]
-        #~~~~~~
-
-        
-        #~~~~~~~
         
         # self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
@@ -237,19 +233,13 @@ class MyGUI:
         # Handle the response
         if response.status_code == 200:
             order = response.json()
-            # order_id = order.get('id')  # get the value of the 'id' key, or None if it doesn't exist
-
-            # Append the order ID to the order object before adding it to the orders list
-            # order['id'] = order_id
-            # self.orders.append(order)
-            
             order_id = order['id']  # Get the 'id' from the response
 
             self.orders.append(order)
 
             # order window
             #TODO FIX THIS WINDOW
-            self.order_window = tk.Toplevel(self.storage_window)
+            self.order_window = tk.Toplevel()
             self.order_window.title("Order Created")
             self.order_listbox = tk.Listbox(self.order_window, height=50, width=50)
             self.order_listbox.pack()
@@ -289,16 +279,20 @@ class MyGUI:
             self.order_frame.pack()
             
             # Create a scrollbar for the listbox
-            scrollbar = tk.Scrollbar(self.order_window)
-            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-            
+            scrollbar = tk.Scrollbar(self.order_frame)
+
 
             # Create a listbox to display the orders
-            self.order_listbox = tk.Listbox(self.order_window, width=100, yscrollcommand=scrollbar.set)
-            self.order_listbox.pack(side=tk.LEFT, fill=tk.BOTH)
+            self.order_listbox = tk.Listbox(self.order_frame, width=100, yscrollcommand=scrollbar.set)
+            self.order_listbox.grid(row=0, column=1)
 
             # Link the scrollbar to the order_listbox
             scrollbar.config(command=self.order_listbox.yview)
+            
+            # Configure the grid weights
+            self.order_frame.grid_rowconfigure(0, weight=1)
+            self.order_frame.grid_columnconfigure(0, weight=1)
+            
 
             # Populate the order_listbox with the order details
             for order in orders:
@@ -306,8 +300,62 @@ class MyGUI:
                 for product in order['products']:
                     self.order_listbox.insert(tk.END, f"Product: {product['name']}  Quantity: {product['quantity']}  Price: {product['price']}")
                 self.order_listbox.insert(tk.END, "")
+            
+            #update order with order id
+            order_id_label = tk.Label(self.order_frame, text="Enter Order ID to Update")
+            order_id_label.grid(row=4,column=0)
+            self.order_id_entry = tk.Entry(self.order_frame)
+            self.order_id_entry.grid(row=5,column=0)
+            
+            order_name_label = tk.Label(self.order_frame, text="Enter Product Name to Update")
+            order_name_label.grid(row=4,column=1)
+            self.order_product_name = tk.Entry(self.order_frame)
+            self.order_product_name.grid(row=5,column=1)
+            
+            
+            order_quantity_label = tk.Label(self.order_frame, text="Enter Product Quantity to Update")
+            order_quantity_label.grid(row=4,column=2)
+            self.order_product_quantity = tk.Entry(self.order_frame)
+            self.order_product_quantity.grid(row=5,column=2)
+            
+            update_button = tk.Button(self.order_frame, text="Update", command=self.update_order)
+            update_button.grid(row=7, column=1)
 
         else:
             messagebox.showerror("Error", f"Error retrieving orders from the database: {response.text}")
+            
+    def update_order(self):
+        # Get the order ID from the entry box
+        order_id = self.order_id_entry.get().strip()
+
+        # Retrieve the order details from the API
+        url = f"http://127.0.0.1:5000/api/order/{order_id}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            order = response.json()
+
+            # Get the product name and new quantity from the entry boxes
+            product_name = self.order_product_name.get().strip()
+            new_quantity = int(self.order_product_quantity.get().strip())
+
+            # Find the product in the order and update its quantity
+            for product in order['products']:
+                if product['name'] == product_name:
+                    product['quantity'] = new_quantity
+
+            # Send a PUT request to update the order with the new product quantity
+            update_url = f"http://127.0.0.1:5000/api/order/{order_id}"
+            response = requests.put(update_url, json=order)
+
+            # Show a success message if the update was successful or an error message otherwise
+            if response.status_code == 200:
+                messagebox.showinfo("Success", f"Order {order_id} updated successfully.")
+            else:
+                messagebox.showerror("Error", f"Error updating order {order_id}: {response.text}")
+
+        else:
+            messagebox.showerror("Error", f"Error retrieving order {order_id}: {response.text}")
 MyGUI()
 
+    
